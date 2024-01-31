@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState,useMemo } from 'react';
 import { LaptopOutlined, NotificationOutlined, UserOutlined,UserSwitchOutlined,SettingOutlined,FundOutlined} from '@ant-design/icons';
 import type { MenuProps, TableProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme,Table,Space } from 'antd';
+import axios from 'axios';
 
 const { Header, Content, Sider } = Layout;
 
@@ -32,11 +33,27 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, FundOutlined,U
   },
 );
 
+function GetBrokers(): DataType[] {
+  const [data2, setBroker] = useState<DataType[]>([]);
+  axios.get('/api').then(response=>{
+      console.log(response);
+     
+      setBroker(response.data as DataType[]);
+      
+    }).catch(error=>{
+      console.log(error);
+      return []
+    });
+    return data2
+}
+
 const App: React.FC = () => {
+ 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const content = GetContent();
   return (
     <Layout>
       <Header style={{ display: 'flex', alignItems: 'center' }}>
@@ -74,29 +91,14 @@ const App: React.FC = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <GetContent></GetContent>
+            {content}
           </Content>
         </Layout>
       </Layout>
     </Layout>
   );
 };
-const data: DataType[] =  [
-  {
-    key: '1',
-    broker_id:1,
-    name: '西南期货',
-    register_time: '2021-2-1',
-    address: '西湖区湖底公园1号',
-  },
-  {
-    key: '2',
-    broker_id:2,
-    name: '永安期货',
-    register_time: '2011-3-14',
-    address: '西湖区湖底公园1号',
-  },
-];
+
 interface DataType {
   key: string;
   broker_id: number;
@@ -138,8 +140,8 @@ const columns: TableProps<DataType>['columns'] = [
   },
 ];
 
-
 function GetContent() {
-  return (<Table dataSource={data} columns={columns} />);
+  const brokers = GetBrokers();
+  return (<Table dataSource={brokers} columns={columns} />);
 }
 export default App;
