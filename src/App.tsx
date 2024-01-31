@@ -1,18 +1,18 @@
 import React from 'react';
-import { LaptopOutlined, NotificationOutlined, UserOutlined, UserSwitchOutlined, SettingOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { LaptopOutlined, NotificationOutlined, UserOutlined,UserSwitchOutlined,SettingOutlined,FundOutlined} from '@ant-design/icons';
+import type { MenuProps, TableProps } from 'antd';
+import { Breadcrumb, Layout, Menu, theme,Table,Space } from 'antd';
 
 const { Header, Content, Sider } = Layout;
 
-const items1: MenuProps['items'] = ['机构经纪', '投资交易', '行情资讯', '关于我们'].map((key) => ({
+const items1: MenuProps['items'] = ['机构经纪','投资交易', '行情资讯','关于我们'].map((key) => ({
   key,
   label: `${key}`,
 }));
 
-const nav = ['机构管理', '柜台管理', '消息管理', '资金划转', '系统设置'];
+const nav = ['机构管理', '柜台管理',  '代客下单', '资金划转', '消息管理', '系统设置'];
 
-const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined, UserSwitchOutlined, SettingOutlined].map(
+const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, FundOutlined,UserSwitchOutlined,  NotificationOutlined, SettingOutlined].map(
   (icon, index) => {
     const key = nav[index];
 
@@ -74,15 +74,72 @@ const App: React.FC = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            Content
+            <GetContent></GetContent>
           </Content>
         </Layout>
       </Layout>
     </Layout>
   );
 };
+const data: DataType[] =  [
+  {
+    key: '1',
+    broker_id:1,
+    name: '西南期货',
+    register_time: '2021-2-1',
+    address: '西湖区湖底公园1号',
+  },
+  {
+    key: '2',
+    broker_id:2,
+    name: '永安期货',
+    register_time: '2011-3-14',
+    address: '西湖区湖底公园1号',
+  },
+];
+interface DataType {
+  key: string;
+  broker_id: number;
+  name: string;
+  register_time: string;
+  address: string;
+
+}
+const columns: TableProps<DataType>['columns'] = [
+  {
+    title: '机构ID',
+    dataIndex: 'broker_id',
+    key: 'broker_id',
+  },
+  {
+    title: '机构名称',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: '注册时间',
+    dataIndex: 'register_time',
+    key: 'register_time',
+  },
+  {
+    title: '机构地址',
+    dataIndex: 'address',
+    key: 'address',
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render: (_, record) => (
+      <Space size="middle">
+        <a>编辑</a>
+        <a>删除</a>
+      </Space>
+    ),
+  },
+];
+
 
 function GetContent() {
-  return
+  return (<Table dataSource={data} columns={columns} />);
 }
 export default App;
